@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="https://www.tapsmart.com/wp-content/uploads/2023/08/twitter-old-logo-HD.png">
+    <title>Twitter</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: #f7f9fa;
+        }
+        .twitter-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .sidebar {
+            position: sticky;
+            top: 20px;
+        }
+        .tweet {
+            border-bottom: 1px solid #e6ecf0;
+            padding: 15px;
+            background-color: white;
+        }
+        .tweet:hover {
+            background-color: #f5f8fa;
+        }
+        .profile-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .profile-img-sm {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .tweet-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            color: #657786;
+        }
+        .tweet-actions div {
+            cursor: pointer;
+        }
+        .tweet-actions div:hover {
+            color: #1da1f2;
+        }
+        .sidebar-item {
+            padding: 12px;
+            margin-bottom: 5px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+        .sidebar-item:hover {
+            background-color: rgba(29, 161, 242, 0.1);
+            color: #1da1f2;
+        }
+        .sidebar-item.active {
+            font-weight: bold;
+        }
+        .sidebar-icon {
+            margin-right: 20px;
+            font-size: 1.3rem;
+        }
+        .tweet-btn {
+            background-color: #1da1f2;
+            color: white;
+            border-radius: 30px;
+            padding: 10px 20px;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .tweet-btn:hover {
+            background-color: #1a91da;
+        }
+        .compose-tweet {
+            border-bottom: 8px solid #e6ecf0;
+            padding: 15px;
+            background-color: white;
+        }
+        .who-to-follow {
+            background-color: #f7f9fa;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .trending {
+            background-color: #f7f9fa;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .follow-btn {
+            background-color: #000;
+            color: white;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            padding: 5px 15px;
+        }
+        .follow-btn:hover {
+            background-color: #333;
+            color: white;
+        }
+        .trending-item {
+            padding: 10px 0;
+            cursor: pointer;
+        }
+        .trending-item:hover {
+            background-color: rgba(0, 0, 0, 0.03);
+        }
+        .user-badge {
+            background-color: #1da1f2;
+            color: white;
+            border-radius: 50%;
+            width: 15px;
+            height: 15px;
+            font-size: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 3px;
+        }
+        .tweet-textarea {
+            border: none;
+            resize: none;
+        }
+        .tweet-textarea:focus {
+            outline: none;
+            box-shadow: none;
+        }
+        /* Modal styling */
+        .modal-content {
+            border-radius: 15px;
+        }
+        .modal-title {
+            font-weight: bold;
+        }
+        .scan-btn {
+            background-color: #1da1f2;
+            color: white;
+            border-radius: 30px;
+            padding: 8px 16px;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 10px 0;
+        }
+        .loading-spinner {
+            width: 2rem;
+            height: 2rem;
+        }
+        /* Added for page load censoring */
+        .page-loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .censored {
+            color: #1da1f2;
+            font-style: italic;
+        }
+
+        /* Dark Mode Styles */
+body {
+    background-color: #15202B !important;
+    color: #fff !important;
+}
+
+.twitter-container {
+    background-color: #15202B;
+}
+
+.tweet, .compose-tweet {
+    background-color: #192734 !important;
+    border-color: #38444D !important;
+}
+
+.tweet:hover {
+    background-color: #1C2F3F !important;
+}
+
+.tweet-textarea {
+    background-color: #192734 !important;
+    color: #fff !important;
+}
+
+.tweet-textarea::placeholder {
+    color: #8899A6 !important;
+}
+
+.sidebar-item {
+    color: #fff;
+}
+
+.sidebar-item:hover {
+    background-color: rgba(29, 161, 242, 0.1);
+}
+
+.text-secondary {
+    color: #8899A6 !important;
+}
+
+.trending, .who-to-follow {
+    background-color: #192734 !important;
+}
+
+.modal-content {
+    background-color: #192734 !important;
+    color: #fff !important;
+}
+
+.form-control, .input-group-text {
+    background-color: #253341 !important;
+    border-color: #38444D !important;
+    color: #fff !important;
+}
+
+.btn-secondary {
+    background-color: #253341 !important;
+    border-color: #38444D !important;
+}
+
+.border-start, .border-end {
+    border-color: #38444D !important;
+}
+
+#censoredText {
+    background-color: #253341;
+    border-color: #38444D !important;
+}
+
+.border-bottom {
+    border-color: #38444D !important;
+}
+
+.page-loading {
+    background-color: rgba(21, 32, 43, 0.8) !important;
+}
+
+    </style>
+</head>
+<body>
+    <!-- Page loading indicator -->
+    <div class="page-loading" id="pageLoading">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-3">Censoring tweets...</p>
+    </div>
+    
+    <div class="container-fluid">
+        <div class="row twitter-container">
+            <!-- Left Sidebar -->
+            <div class="col-md-3 d-none d-md-block">
+                <div class="sidebar">
+                    <div class="sidebar-item mb-4">
+                        <i class="fab fa-twitter sidebar-icon text-primary fs-3"></i>
+                    </div>
+                    <div class="sidebar-item active">
+                        <i class="fas fa-home sidebar-icon"></i>
+                        Home
+                    </div>
+                    <div class="sidebar-item">
+                        <i class="fas fa-hashtag sidebar-icon"></i>
+                        Explore
+                    </div>
+                    <div class="sidebar-item">
+                        <i class="far fa-bell sidebar-icon"></i>
+                        Notifications
+                    </div>
+                    <div class="sidebar-item">
+                        <i class="far fa-envelope sidebar-icon"></i>
+                        Messages
+                    </div>
+                    <div class="sidebar-item">
+                        <i class="far fa-bookmark sidebar-icon"></i>
+                        Bookmarks
+                    </div>
+                    <div class="sidebar-item">
+                        <i class="fas fa-list-alt sidebar-icon"></i>
+                        Lists
+                    </div>
+                    <div class="sidebar-item">
+                        <i class="far fa-user sidebar-icon"></i>
+                        Profile
+                    </div>
+                    <div class="sidebar-item">
+                        <i class="fas fa-ellipsis-h sidebar-icon"></i>
+                        More
+                    </div>
+                    
+                    <button class="btn tweet-btn" data-bs-toggle="modal" data-bs-target="#scanModal">
+                        Scan Tweets
+                    </button>
+                    
+                    <button class="btn tweet-btn mt-2">
+                        Tweet
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="col-md-6 p-0 border-start border-end">
+                <div class="p-3 border-bottom" style="background-color: #192734; color: #fff; border-color: #38444D !important;">
+                    <h5 class="fw-bold mb-0">Home</h5>
+                </div>
+                
+                <!-- Compose Tweet -->
+                <div class="compose-tweet">
+                    <div class="d-flex">
+                        <img src="/images/michael_scott.jpg" alt="Profile" class="profile-img me-3">
+                        <div class="flex-grow-1">
+                            <textarea class="form-control tweet-textarea" id="newTweetText" rows="3" placeholder="What's happening?"></textarea>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <div>
+                                    <i class="far fa-image text-primary me-3"></i>
+                                    <i class="fas fa-poll text-primary me-3"></i>
+                                    <i class="far fa-smile text-primary me-3"></i>
+                                    <i class="far fa-calendar text-primary"></i>
+                                </div>
+                                <button class="btn btn-sm tweet-btn" id="postTweetBtn">Tweet</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tweets -->
+                <div class="tweets">
+                    <div class="tweet">
+                        <div class="d-flex">
+                            <img src="/images/arthur.jpg" alt="User" class="profile-img me-3">
+                            <div>
+                                <div>
+                                    <span class="fw-bold">John Smith</span>
+                                    <span class="text-secondary ms-1">@johnsmith</span>
+                                    <span class="text-secondary ms-1">· 2h</span>
+                                </div>
+                                <p>This new policy is so stupid! Only an idiot would support it. What a bunch of morons running things these days. #Politics</p>
+                                <div class="tweet-actions">
+                                    <div><i class="far fa-comment"></i> <span>5</span></div>
+                                    <div><i class="fas fa-retweet"></i> <span>12</span></div>
+                                    <div><i class="far fa-heart"></i> <span>32</span></div>
+                                    <div><i class="fas fa-share-alt"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>                    
+                </div>
+            </div>
+            
+            <!-- Right Sidebar -->
+            <div class="col-md-3 d-none d-md-block">
+                <div class="sidebar mt-3">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text bg-light border-end-0">
+                            <i class="fas fa-search text-secondary"></i>
+                        </span>
+                        <input type="text" class="form-control bg-light border-start-0" placeholder="Search Twitter">
+                    </div>
+                    
+                    <!-- Trending Section -->
+                    <div class="trending mb-4">
+                        <h5 class="fw-bold mb-3">Trends for you</h5>
+                        
+                        <div class="trending-item">
+                            <div class="text-secondary small">Trending in Politics</div>
+                            <div class="fw-bold">#PoliticalDebate</div>
+                            <div class="text-secondary small">50.4K Tweets</div>
+                        </div>
+                        
+                        <div class="trending-item">
+                            <div class="text-secondary small">Trending in Technology</div>
+                            <div class="fw-bold">#AIEthics</div>
+                            <div class="text-secondary small">32.7K Tweets</div>
+                        </div>
+                        
+                        <div class="trending-item">
+                            <div class="text-secondary small">Trending in Sports</div>
+                            <div class="fw-bold">#Championship</div>
+                            <div class="text-secondary small">102K Tweets</div>
+                        </div>
+                        
+                        <div class="trending-item">
+                            <div class="text-secondary small">Trending in Entertainment</div>
+                            <div class="fw-bold">#NewMovieRelease</div>
+                            <div class="text-secondary small">88.3K Tweets</div>
+                        </div>
+                        
+                        <div class="trending-item">
+                            <div class="fw-bold text-primary">Show more</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Who to Follow Section -->
+                    <div class="who-to-follow">
+                        <h5 class="fw-bold mb-3">Who to follow</h5>
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="d-flex align-items-center">
+                                <img src="/images/SYDNEY.jpg" alt="User" class="profile-img-sm me-2">
+                                <div>
+                                    <div class="fw-bold">Sydney Williams</div>
+                                    <div class="text-secondary small">@sydndey</div>
+                                </div>
+                            </div>
+                            <button class="btn follow-btn">Follow</button>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="d-flex align-items-center">
+                                <img src="/images/1.jpg" alt="User" class="profile-img-sm me-2">
+                                <div>
+                                    <div class="fw-bold">Tech Daily</div>
+                                    <div class="text-secondary small">@techdaily</div>
+                                </div>
+                            </div>
+                            <button class="btn follow-btn">Follow</button>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="d-flex align-items-center">
+                                <img src="/images/simpsons.png" alt="User" class="profile-img-sm me-2">
+                                <div>
+                                    <div class="fw-bold">Mandeep Chen</div>
+                                    <div class="text-secondary small">@mandeepc</div>
+                                </div>
+                            </div>
+                            <button class="btn follow-btn">Follow</button>
+                        </div>
+                        
+                        <div class="fw-bold text-primary">Show more</div>
+                    </div>
+                    
+                    <div class="text-secondary small mt-3">
+                        Terms of Service · Privacy Policy · Cookie Policy · Accessibility · Ads info · More · © 2025 Twitter, Inc.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Hate Speech Scanner Modal -->
+    <div class="modal fade" id="scanModal" tabindex="-1" aria-labelledby="scanModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="scanModalLabel">Hate Speech Scanner</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="originalText" class="form-label fw-bold">Original Text:</label>
+                        <textarea class="form-control" id="originalText" rows="4" placeholder="Enter text to scan for hate speech..."></textarea>
+                    </div>
+                    
+                    <div class="loading" id="loadingIndicator">
+                        <div class="spinner-border text-primary loading-spinner" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-2">Processing text...</p>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="censoredText" class="form-label fw-bold">Censored Text:</label>
+                        <div id="censoredText" class="p-3 border rounded">Results will appear here after scanning</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn scan-btn" id="scanButton">Scan for Hate Speech</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const scanButton = document.getElementById("scanButton");
+            const originalText = document.getElementById("originalText");
+            const censoredText = document.getElementById("censoredText");
+            const loadingIndicator = document.getElementById("loadingIndicator");
+            const pageLoading = document.getElementById("pageLoading");
+            
+            // Function to scan text using the backend API
+            async function scanText(text) {
+                try {
+                    const response = await fetch("http://127.0.0.1:5000/process", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ text: text })
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok");
+                    }
+                    
+                    const data = await response.json();
+                    return data.censored_text || "Error processing text";
+                } catch (error) {
+                    console.error("Error:", error);
+                    return "Error connecting to server";
+                }
+            }
+            
+            // Function to process all tweets on page load
+            async function processTweetsOnLoad() {
+                const tweetElements = document.querySelectorAll(".tweet p");
+                
+                // Process each tweet
+                for (const tweetElement of tweetElements) {
+                    const originalText = tweetElement.textContent;
+                    const censoredText = await scanText(originalText);
+                    
+                    // Update the tweet with censored text
+                    if (censoredText && !censoredText.includes("Error")) {
+                        tweetElement.textContent = censoredText;
+                        tweetElement.classList.add("censored");
+                        
+                        // Store original text as a data attribute for reference
+                        tweetElement.setAttribute("data-original-text", originalText);
+                    }
+                }
+                
+                // Hide the loading overlay
+                pageLoading.style.display = "none";
+            }
+            
+            // Run automatic tweet processing on page load
+            processTweetsOnLoad();
+            
+            // Event listener for manual scan button
+            scanButton.addEventListener("click", async function() {
+                const text = originalText.value;
+                if (text.trim() === "") {
+                    censoredText.textContent = "Please enter some text to scan.";
+                    return;
+                }
+                
+                // Show loading indicator
+                loadingIndicator.style.display = "block";
+                censoredText.textContent = "Processing...";
+                
+                try {
+                    const result = await scanText(text);
+                    loadingIndicator.style.display = "none";
+                    censoredText.textContent = result;
+                } catch (error) {
+                    loadingIndicator.style.display = "none";
+                    censoredText.textContent = "Error processing text: " + error.message;
+                }
+            });
+
+            // Add this to your existing script section
+document.getElementById('postTweetBtn').addEventListener('click', async function() {
+    const tweetText = document.getElementById('newTweetText').value;
+    if (!tweetText.trim()) return;
+
+    // First censor the tweet text
+    const censoredText = await scanText(tweetText);
+    
+    // Create new tweet HTML
+    const newTweet = document.createElement('div');
+    newTweet.className = 'tweet';
+    newTweet.innerHTML = `
+        <div class="d-flex">
+            <img src="/images/michael_scott.jpg" alt="User" class="profile-img me-3">
+            <div>
+                <div>
+                    <span class="fw-bold">Michael Scott</span>
+                    <span class="text-secondary ms-1">@michael</span>
+                    <span class="text-secondary ms-1">· Just now</span>
+                </div>
+                <p class="censored" data-original-text="${tweetText}">${censoredText}</p>
+                <div class="tweet-actions">
+                    <div><i class="far fa-comment"></i> <span>0</span></div>
+                    <div><i class="fas fa-retweet"></i> <span>0</span></div>
+                    <div><i class="far fa-heart"></i> <span>0</span></div>
+                    <div><i class="fas fa-share-alt"></i></div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Add click listener to new tweet
+    newTweet.querySelector('p').addEventListener('click', function() {
+        const modal = new bootstrap.Modal(document.getElementById('scanModal'));
+        document.getElementById('originalText').value = this.getAttribute('data-original-text') || this.textContent;
+        modal.show();
+        setTimeout(() => document.getElementById('scanButton').click(), 500);
+    });
+
+    // Insert at the top of tweets container
+    const tweetsContainer = document.querySelector('.tweets');
+    tweetsContainer.insertBefore(newTweet, tweetsContainer.firstChild);
+
+    // Clear the textarea
+    document.getElementById('newTweetText').value = '';
+});
+            
+            // Add event listeners to scan the tweets when clicked
+            document.querySelectorAll(".tweet p").forEach(tweetText => {
+                tweetText.addEventListener("click", function() {
+                    const modal = new bootstrap.Modal(document.getElementById('scanModal'));
+                    
+                    // Use original text if available, otherwise use current (censored) text
+                    const textToScan = this.getAttribute("data-original-text") || this.textContent;
+                    originalText.value = textToScan;
+                    
+                    modal.show();
+                    
+                    // Auto-scan the tweet text
+                    setTimeout(() => {
+                        scanButton.click();
+                    }, 500);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

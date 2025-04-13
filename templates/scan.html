@@ -276,7 +276,7 @@ body {
                         <i class="fab fa-twitter sidebar-icon text-primary fs-3"></i>
                     </div>
                     <div class="sidebar-item active">
-                        <i class="fas fa-home sidebar-icon"></i>
+                        <i class="fab fa-twitter sidebar-icon text-primary fs-3"></i>
                         Home
                     </div>
                     <div class="sidebar-item">
@@ -504,7 +504,7 @@ body {
             // Function to scan text using the backend API
             async function scanText(text) {
                 try {
-                    const response = await fetch("http://127.0.0.1:5000/process", {
+                    const response = await fetch("https://ozymozy-toxi.hf.space/censor-post", {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json"

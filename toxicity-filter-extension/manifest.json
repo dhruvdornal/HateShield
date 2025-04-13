@@ -1,0 +1,43 @@
+{
+    "manifest_version": 3,
+    "name": "Toxicity Filter",
+    "version": "1.0",
+    "description": "Automatically censors toxic content on social media platforms",
+    "permissions": [
+      "activeTab",
+      "storage"
+    ],
+    "host_permissions": [
+      "https://x.com/*",
+      "https://*.instagram.com/*",
+      "https://www.threads.net/*",
+      "https://www.reddit.com/*"
+    ],
+    "background": {
+      "service_worker": "background.js"
+    },
+    "content_scripts": [
+      {
+        "matches": [
+          "https://x.com/*",
+          "https://*.instagram.com/*",
+          "https://www.threads.net/*",
+          "https://www.reddit.com/*"
+        ],
+        "js": ["content.js"]
+      }
+    ],
+    "action": {
+      "default_popup": "popup.html",
+      "default_icon": {
+        "16": "icon.png",
+        "48": "icon.png",
+        "128": "icon.png"
+      }
+    },
+    "icons": {
+      "16": "icon.png",
+      "48": "icon.png",
+      "128": "icon.png"
+    }
+  }
